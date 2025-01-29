@@ -14,7 +14,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 @DesignerComponent(
-        version = 1,
+        versionName = "1.1",
+        version = 2,
         description = "Wi-Fi Controlled Robot Extension",
         category = ComponentCategory.EXTENSION,
         nonVisible = true,
@@ -49,9 +50,9 @@ public class WifiControlledRobot extends AndroidNonvisibleComponent {
                 try {
                     socket = new Socket(robotIp, robotPort);
                     output = new PrintWriter(socket.getOutputStream(), true);
-                    DispatchEvent("Connected", "Successfully connected to " + robotIp + ":" + robotPort);
+                    Connected();
                 } catch (IOException e) {
-                    DispatchEvent("ConnectionFailed", "Failed to connect: " + e.getMessage());
+                    ConnectionFailed();
                 }
             }
         }).start();
@@ -65,11 +66,11 @@ public class WifiControlledRobot extends AndroidNonvisibleComponent {
                 public void run() {
                     output.println(command);
                     output.flush();
-                    DispatchEvent("CommandSent", "Sent: " + command);
+                    CommandSent();
                 }
             }).start();
         } else {
-            DispatchEvent("CommandFailed", "Not connected to a robot.");
+            CommandFailed();
         }
     }
 
@@ -85,19 +86,49 @@ public class WifiControlledRobot extends AndroidNonvisibleComponent {
                     if (socket != null) {
                         socket.close();
                     }
-                    DispatchEvent("Disconnected", "Connection closed.");
+                    Disconnected();
                 } catch (IOException e) {
-                    DispatchEvent("DisconnectionFailed", "Error: " + e.getMessage());
+                    DisconnectionFailed();
                 }
             }
         }).start();
     }
 
-    private void DispatchEvent(final String eventName, final String message) {
+    @SimpleEvent(description = "Disconnected to robot")
+    public void Disconnected(){
+            DispatchEvent("Disconnected");
+    }
+
+    @SimpleEvent(description = "Disconnection to robot failed")
+    public void DisconnectionFailed(){
+            DispatchEvent("DisconnectionFailed");
+    }
+
+    @SimpleEvent(description = "Sent command to robot")
+    public void CommandSent(){
+            DispatchEvent("CommandSent");
+    }
+
+    @SimpleEvent(description = "When command failed to send")
+    public void CommandFailed(){
+            DispatchEvent("CommandFailed");
+    }
+
+    @SimpleEvent(description = "When connected to robot")
+    public void Connected(){
+            DispatchEvent("Connected");
+    }
+
+    @SimpleEvent(description = "When connection failed to robot")
+    public void ConnectionFailed(){
+            DispatchEvent("ConnectionFailed");
+    }
+        
+    private void DispatchEvent(final String eventName) {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                EventDispatcher.dispatchEvent(WifiControlledRobot.this, eventName, message);
+                EventDispatcher.dispatchEvent(WifiControlledRobot.this, eventName);
             }
         });
     }
