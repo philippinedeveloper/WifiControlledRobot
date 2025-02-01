@@ -13,7 +13,7 @@ import java.io.InputStream;
 import java.net.Socket;
 
 @DesignerComponent(
-        versionName = "1.0",
+        versionName = "1",
         version = 1,
         description = "Wi-Fi Robot Sensor Data Extension",
         category = ComponentCategory.EXTENSION,
@@ -89,7 +89,7 @@ public class WifiRobotSensorData extends AndroidNonvisibleComponent {
                 try {
                     while ((bytesRead = inputStream.read(buffer)) != -1) {
                         String sensorData = new String(buffer, 0, bytesRead);
-                        SensorData(sensorData);  // Directly pass the data to the event
+                        SensorData(sensorData); 
                     }
                 } catch (IOException e) {
                     DataReceptionFailed();
@@ -100,7 +100,7 @@ public class WifiRobotSensorData extends AndroidNonvisibleComponent {
 
     @SimpleEvent(description = "Received sensor data from robot.")
     public void SensorData(String data) {
-        DispatchEvent("SensorData", data);  // Directly dispatch the sensor data
+        DispatchEvent("SensorData", data); 
     }
 
     @SimpleEvent(description = "Connection to robot failed.")
