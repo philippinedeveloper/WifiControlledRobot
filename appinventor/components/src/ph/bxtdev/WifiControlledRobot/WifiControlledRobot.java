@@ -14,8 +14,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 @DesignerComponent(
-        versionName = "1.1",
-        version = 2,
+        versionName = "1.2",
+        version = 3,
         description = "Wi-Fi Controlled Robot Extension",
         category = ComponentCategory.EXTENSION,
         nonVisible = true,
