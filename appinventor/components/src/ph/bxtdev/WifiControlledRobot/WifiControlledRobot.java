@@ -10,26 +10,23 @@ import com.google.appinventor.components.runtime.EventDispatcher;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.Socket;
 
 @DesignerComponent(
-        versionName = "1.2",
-        version = 3,
+        versionName = "1.3",
+        version = 4,
         description = "Wi-Fi Controlled Robot Extension",
         category = ComponentCategory.EXTENSION,
         nonVisible = true,
         iconName = "aiwebres/icon.png")
-
 @SimpleObject(external = true)
 @UsesPermissions(permissionNames = "android.permission.INTERNET, android.permission.ACCESS_NETWORK_STATE")
-
 public class WifiControlledRobot extends AndroidNonvisibleComponent {
 
     private Context context;
     private Activity activity;
     private Socket socket;
-    private PrintWriter output;
+    private OutputStream output;
     private String robotIp = "";
     private int robotPort = 0;
 
@@ -49,7 +46,7 @@ public class WifiControlledRobot extends AndroidNonvisibleComponent {
             public void run() {
                 try {
                     socket = new Socket(robotIp, robotPort);
-                    output = new PrintWriter(socket.getOutputStream(), true);
+                    output = socket.getOutputStream();
                     Connected();
                 } catch (IOException e) {
                     ConnectionFailed();
@@ -64,9 +61,13 @@ public class WifiControlledRobot extends AndroidNonvisibleComponent {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    output.println(command);
-                    output.flush();
-                    CommandSent();
+                    try {
+                        output.write(command.getBytes());
+                        output.flush();
+                        CommandSent();
+                    } catch (IOException e) {
+                        CommandFailed();
+                    }
                 }
             }).start();
         } else {
@@ -94,36 +95,36 @@ public class WifiControlledRobot extends AndroidNonvisibleComponent {
         }).start();
     }
 
-    @SimpleEvent(description = "Disconnected to robot")
-    public void Disconnected(){
-            DispatchEvent("Disconnected");
+    @SimpleEvent(description = "Disconnected from robot")
+    public void Disconnected() {
+        DispatchEvent("Disconnected");
     }
 
-    @SimpleEvent(description = "Disconnection to robot failed")
-    public void DisconnectionFailed(){
-            DispatchEvent("DisconnectionFailed");
+    @SimpleEvent(description = "Disconnection from robot failed")
+    public void DisconnectionFailed() {
+        DispatchEvent("DisconnectionFailed");
     }
 
     @SimpleEvent(description = "Sent command to robot")
-    public void CommandSent(){
-            DispatchEvent("CommandSent");
+    public void CommandSent() {
+        DispatchEvent("CommandSent");
     }
 
     @SimpleEvent(description = "When command failed to send")
-    public void CommandFailed(){
-            DispatchEvent("CommandFailed");
+    public void CommandFailed() {
+        DispatchEvent("CommandFailed");
     }
 
     @SimpleEvent(description = "When connected to robot")
-    public void Connected(){
-            DispatchEvent("Connected");
+    public void Connected() {
+        DispatchEvent("Connected");
     }
 
     @SimpleEvent(description = "When connection failed to robot")
-    public void ConnectionFailed(){
-            DispatchEvent("ConnectionFailed");
+    public void ConnectionFailed() {
+        DispatchEvent("ConnectionFailed");
     }
-        
+
     private void DispatchEvent(final String eventName) {
         activity.runOnUiThread(new Runnable() {
             @Override
@@ -133,3 +134,5 @@ public class WifiControlledRobot extends AndroidNonvisibleComponent {
         });
     }
 }
+
+
