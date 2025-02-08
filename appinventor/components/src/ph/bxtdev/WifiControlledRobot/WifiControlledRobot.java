@@ -7,14 +7,15 @@ import com.google.appinventor.components.common.ComponentCategory;
 import com.google.appinventor.components.runtime.AndroidNonvisibleComponent;
 import com.google.appinventor.components.runtime.ComponentContainer;
 import com.google.appinventor.components.runtime.EventDispatcher;
+import com.google.appinventor.components.runtime.util.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 
 @DesignerComponent(
-        versionName = "1.3",
-        version = 4,
+        versionName = "1.4",
+        version = 5,
         description = "Wi-Fi Controlled Robot Extension",
         category = ComponentCategory.EXTENSION,
         nonVisible = true,
@@ -41,7 +42,7 @@ public class WifiControlledRobot extends AndroidNonvisibleComponent {
         this.robotIp = ip;
         this.robotPort = port;
 
-        new Thread(new Runnable() {
+        AsynchUtil.runAsynchronously(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -52,13 +53,13 @@ public class WifiControlledRobot extends AndroidNonvisibleComponent {
                     ConnectionFailed();
                 }
             }
-        }).start();
+        });
     }
 
     @SimpleFunction(description = "Send a movement command to the robot.")
     public void SendCommand(final String command) {
         if (output != null) {
-            new Thread(new Runnable() {
+            AsynchUtil.runAsynchronously(new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -69,7 +70,7 @@ public class WifiControlledRobot extends AndroidNonvisibleComponent {
                         CommandFailed();
                     }
                 }
-            }).start();
+            });
         } else {
             CommandFailed();
         }
@@ -77,7 +78,7 @@ public class WifiControlledRobot extends AndroidNonvisibleComponent {
 
     @SimpleFunction(description = "Disconnect from the robot.")
     public void Disconnect() {
-        new Thread(new Runnable() {
+        AsynchUtil.runAsynchronously(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -92,7 +93,7 @@ public class WifiControlledRobot extends AndroidNonvisibleComponent {
                     DisconnectionFailed();
                 }
             }
-        }).start();
+        });
     }
 
     @SimpleEvent(description = "Disconnected from robot")
