@@ -75,7 +75,7 @@ public class WifiRobotSensorData extends AndroidNonvisibleComponent {
                     DisconnectionFailed();
                 }
             }
-        };
+        });
     }
 
     @SimpleFunction(description = "Start receiving sensor data from the robot.")
