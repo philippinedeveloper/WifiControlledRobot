@@ -127,7 +127,7 @@ public class WifiControlledRobot extends AndroidNonvisibleComponent {
     }
 
     private void DispatchEvent(final String eventName) {
-        activity.runOnUiThread(new Runnable() {
+       form.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 EventDispatcher.dispatchEvent(WifiControlledRobot.this, eventName);
