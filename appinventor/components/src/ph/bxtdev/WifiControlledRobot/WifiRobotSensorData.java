@@ -43,7 +43,7 @@ public class WifiRobotSensorData extends AndroidNonvisibleComponent {
         this.robotIp = ip;
         this.robotPort = port;
 
-        new Thread(new Runnable() {
+        AsynchUtil.runAsynchronously(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -55,12 +55,12 @@ public class WifiRobotSensorData extends AndroidNonvisibleComponent {
                     ConnectionFailed();
                 }
             }
-        }).start();
+        });
     }
 
     @SimpleFunction(description = "Disconnect from the robot.")
     public void Disconnect() {
-        new Thread(new Runnable() {
+         AsynchUtil.runAsynchronously(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -75,12 +75,12 @@ public class WifiRobotSensorData extends AndroidNonvisibleComponent {
                     DisconnectionFailed();
                 }
             }
-        }).start();
+        };
     }
 
     @SimpleFunction(description = "Start receiving sensor data from the robot.")
     public void StartReceivingData() {
-        new Thread(new Runnable() {
+        AsynchUtil.runAsynchronously(new Runnable() {
             @Override
             public void run() {
                 byte[] buffer = new byte[1024];
@@ -95,7 +95,7 @@ public class WifiRobotSensorData extends AndroidNonvisibleComponent {
                     DataReceptionFailed();
                 }
             }
-        }).start();
+        });
     }
 
     @SimpleEvent(description = "Received sensor data from robot.")
@@ -129,7 +129,7 @@ public class WifiRobotSensorData extends AndroidNonvisibleComponent {
     }
 
     private void DispatchEvent(final String eventName, final String data) {
-        activity.runOnUiThread(new Runnable() {
+        form.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 EventDispatcher.dispatchEvent(WifiRobotSensorData.this, eventName, data);
@@ -138,7 +138,7 @@ public class WifiRobotSensorData extends AndroidNonvisibleComponent {
     }
 
     private void DispatchEvent(final String eventName) {
-        activity.runOnUiThread(new Runnable() {
+        form.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 EventDispatcher.dispatchEvent(WifiRobotSensorData.this, eventName);
