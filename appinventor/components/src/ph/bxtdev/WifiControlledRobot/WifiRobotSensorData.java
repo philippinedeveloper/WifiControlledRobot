@@ -13,7 +13,7 @@ import java.io.InputStream;
 import java.net.Socket;
 
 @DesignerComponent(
-        versionName = "1",
+        versionName = "1.1",
         version = 1,
         description = "Wi-Fi Robot Sensor Data Extension",
         category = ComponentCategory.EXTENSION,
